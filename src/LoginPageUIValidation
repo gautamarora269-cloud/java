@@ -1,0 +1,92 @@
+package com.example.selenium;
+
+import java.time.Duration;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class LoginPageUIValidation {
+
+    public static void main(String[] args) {
+        // 1️⃣ Initialize ChromeDriver
+        // System.setProperty("webdriver.chrome.driver", "C:\\path\\to\\chromedriver.exe");
+
+        WebDriver driver = new ChromeDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        // ✅ Replace with your login credentials
+        String email = "gautamarora269@gmail.com"; 
+        String password = "admin@4077"; 
+
+        try {
+            // 2️⃣ Open Login Page
+            driver.get("https://live.astroindusoot.com/login");
+            driver.manage().window().maximize();
+
+            System.out.println("== UI Validation Tests ==");
+
+            // 3️⃣ Email field check + enter value
+            WebElement emailField = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//input[@placeholder='Enter your email']")));
+            System.out.println("Email field displayed: " + emailField.isDisplayed());
+            emailField.sendKeys(email);
+
+            // 4️⃣ Password field check + enter value
+            WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//input[@placeholder='Enter your password']")));
+            System.out.println("Password field displayed: " + passwordField.isDisplayed());
+            System.out.println("Password input type: " + passwordField.getAttribute("type"));
+            passwordField.sendKeys(password);
+
+            // 5️⃣ Forget password link
+            WebElement forgetLink = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//a[contains(text(),'Forget password')]")));
+            System.out.println("Forget Password link displayed: " + forgetLink.isDisplayed());
+            System.out.println("Forget Password link href: " + forgetLink.getAttribute("href"));
+
+            // 6️⃣ Sign in button
+            WebElement signInButton = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//button[text()='Sign in']")));
+            System.out.println("Sign In button displayed: " + signInButton.isDisplayed());
+            System.out.println("Sign In button enabled: " + signInButton.isEnabled());
+
+            // 7️⃣ Continue with Google button
+            WebElement googleButton = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//span[text()='Continue with Google']")));
+            System.out.println("Continue with Google button displayed: " + googleButton.isDisplayed());
+
+            // 8️⃣ Create new account link
+            WebElement createAccountText = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//a[contains(text(),'Create new one')]")));
+            System.out.println("Create new account text displayed: " + createAccountText.isDisplayed());
+
+            System.out.println("\n== Functional Test: Logging in ==");
+
+            // 9️⃣ Click Sign in
+            signInButton.click();
+
+            Thread.sleep(3000); 
+
+            System.out.println("Current URL after login: " + driver.getCurrentUrl());
+            System.out.println("Page Title after login: " + driver.getTitle());
+
+            // ✅ Simple success/fail check
+            if (driver.getCurrentUrl().toLowerCase().contains("dashboard")) {
+                System.out.println("✅ Login likely successful");
+            } else {
+                System.out.println("❌ Login may have failed — check credentials or page");
+            }
+
+        } catch (Exception e) {
+            System.out.println("❌ Error during test: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            // Close browser
+            try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+            driver.quit();
+        }
+    }
+}
